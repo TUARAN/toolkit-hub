@@ -5,6 +5,31 @@
       <p class="text-gray-600 dark:text-gray-400">输入关键字搜索并下载 GIF 动图</p>
     </div>
 
+    <!-- API Key 配置提示 -->
+    <div v-if="!isApiKeyConfigured" class="mb-6 p-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+      <div class="flex items-start">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+            需要配置 API Key
+          </h3>
+          <div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+            <p class="mb-2">要使用真实的 GIF 搜索功能，请按以下步骤配置：</p>
+            <ol class="list-decimal list-inside space-y-1 ml-2">
+              <li>访问 <a href="https://tenor.com/developer/dashboard" target="_blank" class="underline hover:text-yellow-900 dark:hover:text-yellow-100">Tenor Developer Dashboard</a> 申请免费的 API Key</li>
+              <li>在项目根目录创建 <code class="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">.env</code> 文件</li>
+              <li>添加内容：<code class="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">VITE_TENOR_API_KEY=你的API密钥</code></li>
+              <li>重启开发服务器</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="card p-6">
       <!-- Search Section -->
       <div class="mb-8">
@@ -18,8 +43,13 @@
             placeholder="输入关键字搜索 GIF，如：cat, dog, funny..."
             class="input-field flex-1"
             @keyup.enter="searchGifs"
+            :disabled="!isApiKeyConfigured"
           />
-          <button @click="searchGifs" class="btn-primary whitespace-nowrap">
+          <button 
+            @click="searchGifs" 
+            class="btn-primary whitespace-nowrap"
+            :disabled="!isApiKeyConfigured"
+          >
             <Search class="w-4 h-4 inline mr-2" />
             搜索
           </button>
@@ -34,7 +64,21 @@
 
       <!-- Error Message -->
       <div v-if="error" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-        <p class="text-red-700 dark:text-red-400">{{ error }}</p>
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
+              搜索失败
+            </h3>
+            <div class="mt-2 text-sm text-red-700 dark:text-red-300">
+              <p>{{ error }}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- GIF Results -->
@@ -78,7 +122,7 @@
       </div>
 
       <!-- No Results -->
-      <div v-if="!loading && gifs.length === 0 && searchKeyword" class="text-center py-12">
+      <div v-if="!loading && gifs.length === 0 && searchKeyword && !error" class="text-center py-12">
         <Search class="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <p class="text-gray-600 dark:text-gray-400">未找到相关 GIF</p>
         <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">尝试使用其他关键字搜索</p>
@@ -93,6 +137,7 @@
             :key="keyword"
             @click="searchKeyword = keyword; searchGifs()"
             class="px-3 py-1 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full text-sm hover:bg-blue-200 dark:hover:bg-blue-700 transition-colors duration-200"
+            :disabled="!isApiKeyConfigured"
           >
             {{ keyword }}
           </button>
@@ -115,7 +160,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { Search, Download } from 'lucide-vue-next'
 import { gifService } from '../services/gifService'
 
@@ -133,9 +178,19 @@ export default {
     
     const popularKeywords = ref([])
 
+    // 检查 API Key 是否已配置
+    const isApiKeyConfigured = computed(() => {
+      return gifService.isApiKeyConfigured()
+    })
+
     const searchGifs = async () => {
       if (!searchKeyword.value.trim()) {
         error.value = '请输入搜索关键字'
+        return
+      }
+
+      if (!isApiKeyConfigured.value) {
+        error.value = '请先配置 Tenor API Key'
         return
       }
 
@@ -147,7 +202,7 @@ export default {
         // 使用 GIF 服务搜索
         gifs.value = await gifService.searchGifs(searchKeyword.value, 20)
       } catch (err) {
-        error.value = '搜索失败，请稍后重试'
+        error.value = err.message || '搜索失败，请稍后重试'
         console.error('搜索失败:', err)
       } finally {
         loading.value = false
@@ -203,6 +258,7 @@ export default {
       loading,
       error,
       popularKeywords,
+      isApiKeyConfigured,
       searchGifs,
       downloadGif,
       onImageLoad,

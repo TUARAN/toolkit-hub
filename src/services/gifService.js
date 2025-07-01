@@ -11,9 +11,9 @@ export class GifService {
   }
 
   async searchGifs(query, limit = 20) {
-    if (!this.apiKey || this.apiKey === 'YOUR_TENOR_API_KEY') {
-      // 如果没有 API Key，返回模拟数据
-      return this.getMockGifs(query, limit)
+    if (!this.apiKey || this.apiKey === 'YOUR_TENOR_API_KEY' || this.apiKey === 'your_tenor_api_key_here') {
+      // 如果没有 API Key，抛出明确的错误信息
+      throw new Error('请先配置 Tenor API Key。在项目根目录创建 .env 文件并添加：VITE_TENOR_API_KEY=你的API密钥')
     }
 
     try {
@@ -22,15 +22,25 @@ export class GifService {
       )
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        if (response.status === 403) {
+          throw new Error('API Key 无效或已过期，请检查配置')
+        } else if (response.status === 429) {
+          throw new Error('API 请求次数超限，请稍后重试')
+        } else {
+          throw new Error(`API 请求失败 (${response.status})`)
+        }
       }
       
       const data = await response.json()
+      
+      if (!data.results || data.results.length === 0) {
+        throw new Error(`未找到与 "${query}" 相关的 GIF`)
+      }
+      
       return this.formatGifResults(data.results)
     } catch (error) {
       console.error('GIF 搜索失败:', error)
-      // 如果 API 调用失败，返回模拟数据
-      return this.getMockGifs(query, limit)
+      throw error
     }
   }
 
@@ -56,7 +66,7 @@ export class GifService {
   }
 
   getMockGifs(query, limit = 20) {
-    // 模拟 GIF 搜索结果
+    // 模拟 GIF 搜索结果（仅用于演示）
     const mockGifs = []
     const colors = ['FF6B6B', '4ECDC4', '45B7D1', '96CEB4', 'FFEAA7', 'DDA0DD', '98D8C8', 'F7DC6F', 'BB8FCE', '85C1E9']
     
@@ -80,7 +90,7 @@ export class GifService {
   }
 
   async getTrendingGifs(limit = 10) {
-    if (!this.apiKey || this.apiKey === 'YOUR_TENOR_API_KEY') {
+    if (!this.apiKey || this.apiKey === 'YOUR_TENOR_API_KEY' || this.apiKey === 'your_tenor_api_key_here') {
       return this.getMockTrendingGifs(limit)
     }
 
@@ -90,7 +100,7 @@ export class GifService {
       )
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        throw new Error(`获取热门搜索失败 (${response.status})`)
       }
       
       const data = await response.json()
@@ -106,6 +116,13 @@ export class GifService {
       'cat', 'dog', 'funny', 'happy', 'sad', 'love', 'dance', 'food', 'anime', 'meme',
       'cute', 'cool', 'awesome', 'epic', 'fail', 'win', 'lol', 'omg', 'wow', 'yay'
     ].slice(0, limit)
+  }
+
+  // 检查 API Key 是否已配置
+  isApiKeyConfigured() {
+    return this.apiKey && 
+           this.apiKey !== 'YOUR_TENOR_API_KEY' && 
+           this.apiKey !== 'your_tenor_api_key_here'
   }
 }
 

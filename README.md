@@ -155,12 +155,38 @@ toolkit-hub/
 
 #### Tenor GIF API
 
-1. 访问 [Tenor 开发者控制台](https://tenor.com/developer/dashboard)
-2. 创建新项目并获取 API Key
-3. 复制 `env.example` 为 `.env`
-4. 在 `.env` 文件中设置 `VITE_TENOR_API_KEY=your_api_key`
+GIF 搜索功能需要配置 Tenor API Key 才能正常工作。请按以下步骤配置：
 
-注意：如果没有配置 API Key，GIF 搜索功能将使用模拟数据。
+1. **申请 API Key**：
+   - 访问 [Tenor 开发者控制台](https://tenor.com/developer/dashboard)
+   - 登录或注册 Google 账户
+   - 创建新项目
+   - 获取 API Key（免费，每天有请求限制）
+
+2. **配置环境变量**：
+   ```bash
+   # 复制环境变量示例文件
+   cp env.example .env
+   
+   # 编辑 .env 文件，将 your_tenor_api_key_here 替换为你的实际 API Key
+   VITE_TENOR_API_KEY=你的实际API密钥
+   ```
+
+3. **重启开发服务器**：
+   ```bash
+   npm run dev
+   ```
+
+**注意事项**：
+- API Key 是免费的，但每天有请求次数限制
+- 如果没有配置 API Key，GIF 搜索功能将显示配置提示，无法进行真实搜索
+- 请勿将 `.env` 文件提交到版本控制系统（已添加到 .gitignore）
+- 生产环境部署时，需要在部署平台设置相应的环境变量
+
+**常见问题**：
+- 如果搜索时提示 "API Key 无效"，请检查 API Key 是否正确
+- 如果提示 "API 请求次数超限"，请等待一段时间后重试
+- 如果搜索无结果，请尝试使用其他关键词
 
 ## 🤝 贡献
 
