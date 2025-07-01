@@ -2,6 +2,15 @@
 
 一个实用的开发工具集合，包含多种常用工具，提升开发效率。
 
+## 🌐 在线访问
+
+**🎉 项目已成功部署到 Cloudflare Pages！**
+
+👉 **[立即体验](https://toolkit-hub.pages.dev/)** 👈
+
+[![Deploy to Cloudflare Pages](https://img.shields.io/badge/Deploy%20to-Cloudflare%20Pages-blue?style=for-the-badge&logo=cloudflare)](https://toolkit-hub.pages.dev/)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/TUARAN/toolkit-hub)
+
 ## 🚀 功能特性
 
 - **GIF 搜索下载**: 输入关键字搜索并下载 GIF 动图
@@ -55,7 +64,20 @@ npm run preview
 
 ## 🌐 部署
 
-### GitHub Pages 部署
+### ✅ 已部署到 Cloudflare Pages
+
+项目已成功部署到 [https://toolkit-hub.pages.dev/](https://toolkit-hub.pages.dev/)
+
+**部署特点：**
+- 🚀 全球 CDN 加速
+- 🔒 自动 HTTPS 加密
+- 🔄 自动部署（每次推送代码自动更新）
+- 💰 完全免费托管
+- 🌍 全球访问优化
+
+### 其他部署方式
+
+#### GitHub Pages 部署
 
 1. 在项目根目录创建 `.github/workflows/deploy.yml` 文件：
 
@@ -94,17 +116,11 @@ jobs:
 
 2. 在 GitHub 仓库设置中启用 GitHub Pages，选择 `gh-pages` 分支作为源。
 
-### Cloudflare Pages 部署
+#### Cloudflare Pages 部署（详细步骤）
 
-1. 将代码推送到 GitHub 仓库
-2. 在 Cloudflare Dashboard 中创建新的 Pages 项目
-3. 连接 GitHub 仓库
-4. 设置构建配置：
-   - 构建命令: `npm run build`
-   - 输出目录: `dist`
-   - Node.js 版本: `18`
+详细的 Cloudflare Pages 部署指南请查看 [DEPLOYMENT.md](./DEPLOYMENT.md)
 
-### Vercel 部署
+#### Vercel 部署
 
 1. 将代码推送到 GitHub 仓库
 2. 在 [Vercel](https://vercel.com) 中导入项目
@@ -197,6 +213,13 @@ GIF 搜索功能需要配置 Tenor API Key 才能正常工作。请按以下步�
 3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
 5. 打开 Pull Request
+
+## 📊 项目状态
+
+[![GitHub stars](https://img.shields.io/github/stars/TUARAN/toolkit-hub?style=social)](https://github.com/TUARAN/toolkit-hub)
+[![GitHub forks](https://img.shields.io/github/forks/TUARAN/toolkit-hub?style=social)](https://github.com/TUARAN/toolkit-hub)
+[![GitHub issues](https://img.shields.io/github/issues/TUARAN/toolkit-hub)](https://github.com/TUARAN/toolkit-hub/issues)
+[![GitHub license](https://img.shields.io/github/license/TUARAN/toolkit-hub)](https://github.com/TUARAN/toolkit-hub/blob/master/LICENSE)
 
 ## 📄 许可证
 
