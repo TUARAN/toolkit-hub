@@ -48,7 +48,8 @@ import {
   Image, 
   QrCode, 
   FileText, 
-  Code 
+  Code,
+  Dice6
 } from 'lucide-vue-next'
 
 export default {
@@ -92,6 +93,13 @@ export default {
         icon: Code,
         route: '/base64-converter',
         category: '编码工具'
+      },
+      {
+        title: '摇色子决定器',
+        description: '在两个选项中随机选择一个，让命运做决定',
+        icon: Dice6,
+        route: '/dice-roller',
+        category: '娱乐工具'
       }
     ]
 

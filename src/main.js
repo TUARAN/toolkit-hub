@@ -10,6 +10,7 @@ import ImageCompressor from './views/ImageCompressor.vue'
 import QrCodeGenerator from './views/QrCodeGenerator.vue'
 import JsonFormatter from './views/JsonFormatter.vue'
 import Base64Converter from './views/Base64Converter.vue'
+import DiceRoller from './views/DiceRoller.vue'
 
 // 路由配置
 const routes = [
@@ -18,7 +19,8 @@ const routes = [
   { path: '/image-compressor', component: ImageCompressor },
   { path: '/qr-generator', component: QrCodeGenerator },
   { path: '/json-formatter', component: JsonFormatter },
-  { path: '/base64-converter', component: Base64Converter }
+  { path: '/base64-converter', component: Base64Converter },
+  { path: '/dice-roller', component: DiceRoller }
 ]
 
 const router = createRouter({
